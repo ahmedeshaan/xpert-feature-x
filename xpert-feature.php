@@ -11,8 +11,6 @@ Text Domain: xf
 */
 
 
-
-
 add_action( 'init', 'xpert_feature_init' );
 /**
  * Register a book post type.
@@ -99,7 +97,6 @@ function xpert_feature_init() {
             </table>
 
             <?php
-
         }
 
         add_action('save_post', 'tx_save');
@@ -119,10 +116,13 @@ function xpert_feature_init() {
 
 add_action( 'init', 'metaboxes' );
 
+//__ Create Shortcode__//
 
 add_shortcode('xpert-feature','feature_placement_shortcode');
 
 function feature_placement_shortcode($atts, $content){
+
+
     
     $args = array(
             'post_type'   => 'feature',
@@ -130,10 +130,10 @@ function feature_placement_shortcode($atts, $content){
             'post_id'     => '',
     
         );
-    $data = shortcode_atts($args, $atts);
-   // echo $data['id'];
+    $data = shortcode_atts($args, $atts);   
 
     $feature =  get_posts($args);
+    
 
     foreach ($feature as $post) {
         setup_postdata( $post );
@@ -147,18 +147,129 @@ function feature_placement_shortcode($atts, $content){
         $xpert_feature_title     = get_the_title($post->ID);
         $xpert_feature_image     = get_the_post_thumbnail($post->ID);
         $xpert_feature_content   = get_the_content($post->ID);
+        //echo $xpert_feature_image;
 
-        $output = '<a href="'.$call_to_action_url.'">'.$call_to_action_title .'</a>';
+         $layout = get_post_meta( $post->ID, 'tx_position', TRUE );
+         //echo $layout;
 
+         switch ($layout) {
+        case 'layoutOne':
+            # code...
+                    echo '<section id="feature-2">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="img" data-wow-duration="800ms" data-wow-delay="800ms" href="#" class="wow fadeInRight" >
+                                '.$xpert_feature_image.'                       
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="feature-content">
+                                    <h1 class="wow fadeInLeft section-title" data-wow-duration="300ms" data-wow-delay="100ms"><a href="'.$call_to_action_url.'">'.$call_to_action_title.'</a></h1>
+                                    
+                                    <p class="wow fadeInLeft" data-wow-duration="500ms" data-wow-delay="300ms">
+                                       '.$call_to_action_title.'
+                                    </p>
+                                     
+
+                                <a data-wow-duration="800ms" data-wow-delay="800ms" href="'.$call_to_action_url.'" class="btn btn-default btn-download wow fadeInUp"><i class="ion-ios-download-outline"></i> Download Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </section>';             
+            break;
+
+             case 'layoutTwo':
+                    echo '<section id="feature-3">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="feature-content">
+                                            <h1 class="wow fadeInLeft section-title" data-wow-duration="300ms" data-wow-delay="100ms">'.$call_to_action_title.'</h1>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="block wow fadeInLeft" data-wow-duration="300ms" data-wow-delay="300ms">
+                                                        <h4>Lorem ipsum dolor sit.</h4>
+                                                        <p>'.$xpert_feature_content.'</p>        
+                                                    </div>
+                                                </div>                                             
+                                            </div>
+                                            <a data-wow-duration="800ms" data-wow-delay="800ms" href="'.$call_to_action_url.'" class="btn btn-default btn-download wow fadeInUp"><i class="ion-ios-download-outline"></i> Download Now</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="slider">
+                                            <div id="owl-example" class="owl-carousel">
+                                                <div>'.$xpert_feature_image.'</div>                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>';
+                break;
+
+            case 'layoutThree':
+                # code...
+                    echo '<section id="feature">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="block">
+                                            <div class="section-header text-center">
+                                                <h1 class="wow fadeInUp section-title" data-wow-duration="500ms" data-wow-delay="100ms">'.$call_to_action_title.'</h1>
+                                                <p class="wow fadeInUp" data-wow-duration="300ms" data-wow-delay="100ms">
+                                                    '.$xpert_feature_content.'
+                                                </p>    
+                                            </div>
+                                            <div class="showcase-1 text-center">
+                                                <div class="wow fadeInUp" data-wow-duration="500ms" data-wow-delay="600ms">
+                                                    '.$xpert_feature_image.'
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>';
+                break;
+
+                case 'layoutFour':
+                    # code...
+                            echo '<section id="feature">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="block">
+                                            <div class="section-header text-center">
+                                                <h1 class="wow fadeInUp section-title" data-wow-duration="500ms" data-wow-delay="100ms">'.$call_to_action_title.'</h1>
+                                                <p class="wow fadeInUp" data-wow-duration="300ms" data-wow-delay="100ms">
+                                                    '.$xpert_feature_content.'
+                                                </p>    
+                                            </div>                                            
+                                    </div>
+                                </div>
+                            </div>
+                        </section>';
+
+                    break;
+
+        
+        default:
+            # code...
+            break;
+    }
 
         wp_reset_postdata();
-            return $output;
+            //return $output;
         }
 
     }
 }
 
-//////////// Tinymce Buttion Load ///////////////
+//__End Shortcode__//
+
+//__Tinymce Buttion Load__//
 
 add_action('admin_head', 'tx_add_my_tc_button');
 
@@ -176,7 +287,7 @@ function tx_add_my_tc_button() {
     if ( get_user_option('rich_editing') == 'true') {
         add_filter("mce_external_plugins", "tx_add_tinymce_plugin");
         add_filter('mce_buttons', 'tx_register_my_tc_button');
-        // add_action('media_buttons', 'wpb_add_media_button', 15);
+        
     }
 }
 
@@ -191,10 +302,11 @@ function tx_register_my_tc_button($buttons) {
    return $buttons;
 }
 
+//__End Tinymc load__//
 
-
-add_action('admin_head','my_add_styles_admin');
-function my_add_styles_admin() {
+//__Current post load__//
+add_action('admin_head','tx_current_post');
+function tx_current_post() {
 
     global $current_screen;
     $type = $current_screen->post_type;
@@ -209,21 +321,28 @@ function my_add_styles_admin() {
 
 }
 
+//__End Post Load__//
 
+
+//__Enqueue script and style Load__//
 add_action( 'admin_enqueue_scripts', 'FeatureBackendScripts' );
-
 function FeatureBackendScripts(){
  
 wp_enqueue_script('image-picker-js', plugins_url('assets/vendor/image-picker/js/image-picker.min.js',__FILE__));
-wp_enqueue_script('xpert-picker-app-js', plugins_url('assets/js/app.js',__FILE__));
+wp_enqueue_script('xpert-picker-app-js', plugins_url('assets/js/app.min.js',__FILE__));
 wp_enqueue_style('image-picker-css', plugins_url('assets/vendor/image-picker/css/image-picker.css', __FILE__));
 
-wp_enqueue_script('tx_bootstrap_feature-js', plugins_url('assets/vendor/bootstrap/js/bootstrap.min.js',__FILE__));
-wp_enqueue_style('tx_feature-css', plugins_url('assets/vendor/bootstrap/css/bootstrap.min.css',__FILE__));
+wp_enqueue_script('tx_bootstrap_feature-modal-js', plugins_url('assets/vendor/bootstrap/js/modal.js',__FILE__));
+wp_enqueue_script('tx_bootstrap_transision-js', plugins_url('assets/vendor/bootstrap/js/transition.js',__FILE__));
+wp_enqueue_style('tx_feature-css', plugins_url('assets/css/app.min.css',__FILE__));
  
-wp_enqueue_style('tx-tc', plugins_url('style.css', __FILE__));
+wp_enqueue_style('tx-tc', plugins_url('assets/css/style.min.css', __FILE__));
 }
 
+//__ End Script and Style Load__//
+
+
+//__ Modal Load__//
 add_action('admin_footer', function(){
       $query = new WP_Query(array('post_type' => 'feature'));
       $posts = $query->get_posts();
@@ -260,3 +379,5 @@ add_action('admin_footer', function(){
         </div>
             <?php
         });
+
+//__End Modal Load__//
